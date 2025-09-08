@@ -52,7 +52,11 @@ configurar_dock_personalizado() {
     # Configurar auto-hide del Dock
     defaults write com.apple.dock autohide -bool true
     
+    # Desactivar "Mostrar aplicaciones recientes en el Dock" para evitar que se anclen automáticamente
+    defaults write com.apple.dock show-recents -bool false
+    
     echo "   [DOCK] Aplicaciones personalizadas configuradas con auto-hide activado"
+    echo "   [DOCK] Aplicaciones recientes desactivadas (no se anclan automáticamente)"
 }
 
 restaurar_dock_predeterminado() {
@@ -113,6 +117,7 @@ restaurar_dock_predeterminado() {
     defaults write com.apple.dock autohide -bool true
     
     echo "   [DOCK] Aplicaciones predeterminadas restauradas con auto-hide activado"
+    echo "   [DOCK] Aplicaciones recientes activadas (comportamiento predeterminado)"
 }
 
 abrir_configuracion_accesibilidad() {
@@ -181,6 +186,7 @@ restaurar_configuracion_opcion_2() {
     defaults delete com.apple.dock autohide-delay 2>/dev/null || true
     defaults delete com.apple.dock autohide-time-modifier 2>/dev/null || true
     defaults delete com.apple.dock no-bouncing 2>/dev/null || true
+    defaults delete com.apple.dock show-recents 2>/dev/null || true
     
     # Restaurar aplicaciones predeterminadas en el Dock
     restaurar_dock_predeterminado
