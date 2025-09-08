@@ -63,19 +63,16 @@ configurar_dock_personalizado() {
 restaurar_dock_predeterminado() {
     echo "   [DOCK] Restaurando aplicaciones predeterminadas de macOS..."
     
-    # Primero, eliminar completamente TODA la configuración del Dock
+    # Eliminar COMPLETAMENTE toda la configuración del Dock para limpiar aplicaciones huérfanas
     defaults delete com.apple.dock 2>/dev/null || true
-    
-    # Esperar un momento para que se aplique
-    sleep 0.5
     
     # Reiniciar el Dock para aplicar la eliminación completa
     killall Dock 2>/dev/null || true
     
-    # Esperar a que el Dock se reinicie
-    sleep 1
+    # Esperar a que el Dock se reinicie completamente
+    sleep 2
     
-    # Ahora configurar las aplicaciones predeterminadas de macOS
+    # Ahora inicializar arrays vacíos
     defaults write com.apple.dock persistent-apps -array
     defaults write com.apple.dock persistent-others -array
     
