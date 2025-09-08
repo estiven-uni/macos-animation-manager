@@ -82,7 +82,7 @@ restaurar_dock_predeterminado() {
     # Aplicaciones predeterminadas de macOS (configuración de fábrica)
     # Solo incluir aplicaciones que vienen preinstaladas con macOS
     local apps_default=(
-        "/System/Applications/Finder.app"
+        "/System/Library/CoreServices/Finder.app"
         "/System/Applications/Launchpad.app"
         "/Applications/Safari.app"
         "/System/Applications/Messages.app"
@@ -111,13 +111,18 @@ restaurar_dock_predeterminado() {
     # Agregar la papelera al final del Dock (lado derecho)
     defaults write com.apple.dock persistent-others -array-add '<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>file://~/.Trash</string><key>_CFURLStringType</key><integer>0</integer></dict></dict><key>tile-type</key><string>directory-tile</string></dict>'
     
-    # Configurar el Dock con valores predeterminados adicionales
+    # Configurar el Dock con valores predeterminados de macOS
     defaults write com.apple.dock tilesize -int 48
     defaults write com.apple.dock show-recents -bool true
     defaults write com.apple.dock minimize-to-application -bool false
-    defaults write com.apple.dock autohide -bool true
+    defaults write com.apple.dock autohide -bool false
+    defaults write com.apple.dock mineffect -string "genie"
+    defaults write com.apple.dock launchanim -bool true
+    defaults write com.apple.dock autohide-delay -float 0.5
+    defaults write com.apple.dock autohide-time-modifier -float 1.0
+    defaults write com.apple.dock no-bouncing -bool false
     
-    echo "   [DOCK] Aplicaciones predeterminadas restauradas con auto-hide activado"
+    echo "   [DOCK] Aplicaciones predeterminadas restauradas con configuración de fábrica"
     echo "   [DOCK] Aplicaciones recientes activadas (comportamiento predeterminado)"
 }
 
@@ -181,15 +186,8 @@ aplicar_configuracion_opcion_1() {
 
 restaurar_configuracion_opcion_2() {
     echo "🔄 Restaurando configuración por defecto de macOS (como venía)"
-    echo "— DOCK"
-    defaults delete com.apple.dock mineffect 2>/dev/null || true
-    defaults delete com.apple.dock launchanim 2>/dev/null || true
-    defaults delete com.apple.dock autohide-delay 2>/dev/null || true
-    defaults delete com.apple.dock autohide-time-modifier 2>/dev/null || true
-    defaults delete com.apple.dock no-bouncing 2>/dev/null || true
-    defaults delete com.apple.dock show-recents 2>/dev/null || true
     
-    # Restaurar aplicaciones predeterminadas en el Dock
+    # Restaurar aplicaciones predeterminadas en el Dock (esto ya incluye todas las configuraciones)
     restaurar_dock_predeterminado
 
     echo "— VENTANAS"
