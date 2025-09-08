@@ -35,6 +35,7 @@ configurar_dock_personalizado() {
         "/System/Applications/Launchpad.app"
         "/Applications/Warp.app"
         "/Applications/DBeaver.app"    
+        "/System/Applications/Notes.app"
         "/System/Applications/Reminders.app"
         "/System/Applications/System Settings.app"    
     )
