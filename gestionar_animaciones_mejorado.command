@@ -21,8 +21,10 @@ configurar_dock_personalizado() {
     # Lista de aplicaciones a agregar al Dock
     local apps=(
         "/Applications/Claude.app"
+        "/Applications/ChatGPT.app"
         "/Applications/Google Chrome.app"
         "/Applications/Safari.app"
+        "/Applications/Firefox.app"
         "/Applications/Cursor.app"
         "/System/Applications/Utilities/Terminal.app"
         "/Applications/Slack.app"
@@ -32,12 +34,15 @@ configurar_dock_personalizado() {
         "/System/Applications/Finder.app"
         "/System/Applications/Launchpad.app"
         "/Applications/Warp.app"
+        "/Applications/DBeaver.app"    
+        "/System/Applications/Reminders.app"
+        "/System/Applications/System Settings.app"    
     )
     
     # Agregar cada aplicación al Dock
     for app in "${apps[@]}"; do
         if [ -e "$app" ]; then
-            defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>$app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
+            defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>file://$app</string><key>_CFURLStringType</key><integer>15</integer></dict></dict></dict>"
             echo "      ✓ Agregada: $(basename "$app")"
         else
             echo "      ⚠️  No encontrada: $(basename "$app")"
@@ -91,19 +96,10 @@ restaurar_dock_predeterminado() {
     # Agregar cada aplicación predeterminada al Dock
     for app in "${apps_default[@]}"; do
         if [ -e "$app" ]; then
-            defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>$app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
+            defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>file://$app</string><key>_CFURLStringType</key><integer>15</integer></dict></dict></dict>"
             echo "      ✓ Restaurada: $(basename "$app")"
         else
-            # Para versiones anteriores de macOS, intenta con System Preferences
-            if [[ "$app" == *"System Settings.app" ]]; then
-                local alt_app="/System/Applications/System Preferences.app"
-                if [ -e "$alt_app" ]; then
-                    defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>$alt_app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-                    echo "      ✓ Restaurada: System Preferences"
-                fi
-            else
-                echo "      ⚠️  No encontrada: $(basename "$app")"
-            fi
+            echo "      ⚠️  No encontrada: $(basename "$app")"
         fi
     done
     
@@ -159,7 +155,15 @@ aplicar_configuracion_opcion_1() {
     defaults write com.apple.finder DisableAllAnimations -bool true
 
     echo "— ACCESIBILIDAD"
-    abrir_configuracion_accesibilidad "activar"
+    echo "   [ACC] Abriendo configuración de accesibilidad para activar las opciones manualmente..."
+    echo "   🔧 Debes activar manualmente: Reducir movimiento y Reducir transparencia"
+    open "x-apple.systempreferences:com.apple.preference.universalaccess"
+    open "x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Display"
+    osascript -e 'tell application "System Settings" to activate' 2>/dev/null || \
+    osascript -e 'tell application "System Preferences" to activate' 2>/dev/null
+    echo ""
+    echo "   ✅ Configuración abierta. Realiza los cambios y presiona cualquier tecla cuando termines."
+    read -n 1 -s
 
     echo "— MISSION CONTROL"
     defaults write com.apple.dock expose-animation-duration -float 0.0
@@ -190,7 +194,15 @@ restaurar_configuracion_opcion_2() {
     defaults delete com.apple.finder DisableAllAnimations 2>/dev/null || true
 
     echo "— ACCESIBILIDAD"
-    abrir_configuracion_accesibilidad "desactivar"
+    echo "   [ACC] Abriendo configuración de accesibilidad para desactivar las opciones manualmente..."
+    echo "   🔧 Debes desactivar manualmente: Reducir movimiento y Reducir transparencia"
+    open "x-apple.systempreferences:com.apple.preference.universalaccess"
+    open "x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Display"
+    osascript -e 'tell application "System Settings" to activate' 2>/dev/null || \
+    osascript -e 'tell application "System Preferences" to activate' 2>/dev/null
+    echo ""
+    echo "   ✅ Configuración abierta. Realiza los cambios y presiona cualquier tecla cuando termines."
+    read -n 1 -s
 
     echo "— MISSION CONTROL"
     defaults delete com.apple.dock expose-animation-duration 2>/dev/null || true
